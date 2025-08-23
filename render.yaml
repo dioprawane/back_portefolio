@@ -2,17 +2,16 @@ services:
   - type: web
     name: github-analytics-api
     env: python
-    plan: free                       # ou starter/standard
+    plan: starter             # <— disque persistant OK dès Starter
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn github_analytics:app --host 0.0.0.0 --port $PORT
-    # IMPORTANT : attache un disque persistant au répertoire cache
     disk:
       - name: cache
         mountPath: /opt/render/project/src/cache
         sizeGB: 1
     envVars:
-      - key: GITHUB_TOKEN            # ton token GitHub (ne pas le commiter)
+      - key: GITHUB_TOKEN
         sync: false
-      - key: ALLOWED_ORIGINS         # pour CORS (frontend)
-        value: https://srdiop.com,https://*.onrender.com,http://localhost:5271,https://localhost:7271
+      - key: ALLOWED_ORIGINS
+        value: https://srdiop.com,https://localhost:7271,http://localhost:5271
     healthCheckPath: /overview/status?owner=dioprawane
