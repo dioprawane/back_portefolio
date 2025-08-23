@@ -2,7 +2,7 @@ services:
   - type: web
     name: github-analytics-api
     env: python
-    plan: starter             # <— disque persistant OK dès Starter
+    plan: starter
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn github_analytics:app --host 0.0.0.0 --port $PORT
     disk:
@@ -13,5 +13,6 @@ services:
       - key: GITHUB_TOKEN
         sync: false
       - key: ALLOWED_ORIGINS
+        # ⚠️ Pas de wildcard CORS ; mets les origines EXACTES de ton front
         value: https://srdiop.com,https://localhost:7271,http://localhost:5271
-    healthCheckPath: /overview/status?owner=dioprawane
+    healthCheckPath: /health

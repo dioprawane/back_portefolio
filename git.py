@@ -841,13 +841,21 @@ class GitHubAnalytics:
 # --------- API FASTAPI (facultatif mais pratique) ----------
 app = FastAPI(title="GitHub Analytics Ref", version="1.0.0")
 
+# ----- CORS: lire depuis l'env -----
+raw_allowed = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5271,https://localhost:7271"
+)
+ALLOWED_ORIGINS = [o.strip() for o in raw_allowed.split(",") if o.strip()]
+
+
 # ⚠️ Ajoute TOUTES les origines que tu utilises en dev.
-ALLOWED_ORIGINS = [
+"""ALLOWED_ORIGINS = [
     "http://localhost:5271",   # ton Blazor WASM en dev (port à adapter)
     "https://localhost:7271",  # si tu lances Blazor en HTTPS
     "http://localhost:5000", "https://localhost:5001",  # autres ports habituels
     "http://127.0.0.1:5271",
-]
+]"""
 
 """async def _recompute_overview(owner: str):
     try:
@@ -904,6 +912,11 @@ def api_overview(owner: str = Query(..., description="User ou Organisation GitHu
     # (tu peux aussi renvoyer {"status":"building"} avec 202)
     from fastapi import Response
     raise HTTPException(status_code=202, detail="Overview en cours de construction. Réessaie dans quelques secondes.")"""
+
+# ----- Health check simple -----
+@app.get("/health")
+def health():
+    return {"ok": True}
 
 @app.post("/overview/refresh")
 async def api_overview_refresh(owner: str):
