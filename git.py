@@ -844,10 +844,11 @@ app = FastAPI(title="GitHub Analytics Ref", version="1.0.0")
 # ----- CORS: lire depuis l'env -----
 raw_allowed = os.getenv(
     "ALLOWED_ORIGINS",
-    "http://localhost:5271,https://localhost:7271"
+    "https://srdiop.com,http://localhost:5271,https://localhost:7271"
 )
 ALLOWED_ORIGINS = [o.strip() for o in raw_allowed.split(",") if o.strip()]
 
+print("[CORS] allow_origins =", ALLOWED_ORIGINS)
 
 # ⚠️ Ajoute TOUTES les origines que tu utilises en dev.
 """ALLOWED_ORIGINS = [
@@ -891,6 +892,7 @@ app.add_middleware(
     allow_credentials=False,   # pas besoin, le token reste côté serveur Python
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 def _ga() -> GitHubAnalytics:
